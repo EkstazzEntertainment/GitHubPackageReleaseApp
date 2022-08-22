@@ -1,4 +1,4 @@
-namespace Logic.UI.Windows
+namespace Assets.Scripts.Logic.UI.Windows.Repositories
 {
     using UnityEngine;
 

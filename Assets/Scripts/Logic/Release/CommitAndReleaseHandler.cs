@@ -7,9 +7,10 @@ namespace Logic.Release
 
     public class CommitAndReleaseHandler
     {
-        public static void Release(string path, string version, string commitMessage, Action callback)
+        public static void Release(string currentVersion, string path, string version, string commitMessage, Action callback)
         {
             AddToChangeLogFile(path, version, commitMessage);
+            ChangeVersionInPackageFile(path, currentVersion, version);
             ExecuteCommitCommand(path, version, commitMessage, () =>
             {
                 CreateReleaseViaAPI(callback);
@@ -24,6 +25,15 @@ namespace Logic.Release
             File.WriteAllText(path + "CHANGELOG.md", jsonText);
         }
 
+        private static void ChangeVersionInPackageFile(string path, string oldVersion, string newVersion)
+        {
+            string jsonText = File.ReadAllText(path + "package.json");
+            var oldString = "version" + "\"" + ": " + "\"" + $"{oldVersion}";
+            var newString = "version" + "\"" + ": " + "\"" + $"{newVersion}";
+            var newPackageFileText = jsonText.Replace(oldString, newString);
+            File.WriteAllText(path + "package.json", newPackageFileText);
+        }
+        
         private static void ExecuteCommitCommand(string path, string version, string commitMessage, Action callback)
         {
             var shellScriptPath = ShellScriptHelper.RetrieveShellScriptPath();

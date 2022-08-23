@@ -109,6 +109,7 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
                 await Task.Delay(1000);
                 
                 CommitAndReleaseHandler.Release(
+                    currentSelectedVersion,
                     currentSelectedPath,
                     releaseVersionInputField.text, 
                     releaseChangeLogInputField.text,

@@ -117,7 +117,19 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
                     {
                         loadingPopup.SetActive(false);
                     });
+                CleanAfterRelease();
             }
+        }
+
+        private void CleanAfterRelease()
+        {
+            currentSelectedVersion = "";
+            currentSelectedPath = "";
+            releaseVersionInputField.text = "";
+            releaseChangeLogInputField.text = "";
+            packageNameText.text = "";
+            
+            PopulateRepList();
         }
     }
 }

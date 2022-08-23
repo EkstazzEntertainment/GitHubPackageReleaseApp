@@ -6,10 +6,13 @@ namespace Logic.Release
 
     public class CommitAndReleaseHandler
     {
-        public static void Release(string path, string version, string commitMessage)
+        public static void Release(string path, string version, string commitMessage, Action callback)
         {
             AddToChangeLogFile(path, version, commitMessage);
-            ExecuteCommitCommand(path, version, commitMessage);
+            ExecuteCommitCommand(path, version, commitMessage, () =>
+            {
+                
+            });
         }
 
         private static void AddToChangeLogFile(string path, string version, string commitMessage)
@@ -20,7 +23,7 @@ namespace Logic.Release
             File.WriteAllText(path + "CHANGELOG.md", jsonText);
         }
 
-        private static void ExecuteCommitCommand(string path, string version, string commitMessage)
+        private static void ExecuteCommitCommand(string path, string version, string commitMessage, Action callback)
         {
             var firstArg = path;
             var secondArg = $" 'v{version} released: {commitMessage}'";
@@ -34,6 +37,8 @@ namespace Logic.Release
 
             string output = p.StandardOutput.ReadToEnd();
             p.WaitForExit();
+            
+            callback.Invoke();
         }
     }
 }

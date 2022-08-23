@@ -10,6 +10,7 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
     
     public class RepositoriesWindow : MonoBehaviour
     {
+        [SerializeField] private TMP_InputField shellScriptPathInputField;
         [SerializeField] private RepoCell repoCellPrefab;
         [SerializeField] private TMP_InputField repPathInputField;
         [SerializeField] private TMP_InputField repNameInputField;
@@ -18,6 +19,7 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
         [SerializeField] private TMP_InputField releaseVersionInputField;
         [SerializeField] private TMP_InputField releaseChangeLogInputField;
         [SerializeField] private WarningPopUp warningPopUp;
+        [SerializeField] private GameObject loadingPopup;
         
         private List<RepoCell> cells = new List<RepoCell>();
         private string currentSelectedPath;
@@ -54,6 +56,11 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
                 DestroyImmediate(cell.gameObject);
             });
             cells.Clear();
+        }
+
+        public void AddShellScriptPathButton()
+        {
+            
         }
         
         public void AddRepButton()
@@ -96,10 +103,15 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
             }
             else
             {
+                loadingPopup.SetActive(true);
                 CommitAndReleaseHandler.Release(
                     currentSelectedPath,
                     releaseVersionInputField.text, 
-                    releaseChangeLogInputField.text);
+                    releaseChangeLogInputField.text,
+                    () =>
+                    {
+                        loadingPopup.SetActive(false);
+                    });
             }
         }
     }

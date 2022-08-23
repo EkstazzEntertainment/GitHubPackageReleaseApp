@@ -12,6 +12,8 @@ namespace Logic.Release
         private static void AddToChangeLogFile(string path, string version, string commitMessage)
         {
             string jsonText = File.ReadAllText(path + "CHANGELOG.md");
+            jsonText += "\n\n";
+            jsonText += $"{version}   {commitMessage}";
             File.WriteAllText(path + "CHANGELOG.md", jsonText);
         }
     }

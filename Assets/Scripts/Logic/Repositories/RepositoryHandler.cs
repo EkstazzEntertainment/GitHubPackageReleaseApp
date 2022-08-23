@@ -27,7 +27,9 @@ namespace Logic.Repositories
 
         public static void RemoveRepositoryLink(string path, string name)
         {
-            
+            DataBaseHelper.ParseTxtIntoType(Application.persistentDataPath + DataBaseFileName, out DataBaseFormat parsedResult);
+            parsedResult.Reps.Remove(path);
+            DataBaseHelper.SerializeJsonIntoText(Application.persistentDataPath + DataBaseFileName, parsedResult);
         }
 
         private static void CreateDataBaseIfNeeded()

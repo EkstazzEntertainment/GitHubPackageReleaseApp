@@ -1,5 +1,6 @@
 namespace Assets.Scripts.Logic.UI.Windows.Repositories
 {
+    using System;
     using global::Logic.Helpers;
     using global::Logic.Repositories;
     using Structures;
@@ -12,12 +13,14 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
         [SerializeField] private TextMeshProUGUI packageName;
         [SerializeField] private TextMeshProUGUI version;
 
-        private string path;
+        public event Action OnRepoRemoved;
+        
+        private string CachedPath;
 
 
         public void Init(string path, string packName)
         {
-            this.path = path;
+            CachedPath = path;
 
             packageName.text = packName;
             DataBaseHelper.ParseTxtIntoType(path + "package.json", out PackageJson parsedResult);
@@ -31,7 +34,8 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
 
         public void DeleteButton()
         {
-            RepositoryHandler.RemoveRepositoryLink(path, packageName.text);
+            RepositoryHandler.RemoveRepositoryLink(CachedPath, packageName.text);
+            OnRepoRemoved?.Invoke();
         }
     }
 }

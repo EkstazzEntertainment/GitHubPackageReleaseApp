@@ -1,5 +1,6 @@
 namespace Assets.Scripts.Logic.UI.Windows.Repositories
 {
+    using System.Collections.Generic;
     using global::Logic.Repositories;
     using TMPro;
     using UnityEngine;
@@ -15,6 +16,8 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
         [SerializeField] private TMP_InputField releaseVersionInputField;
         [SerializeField] private TMP_InputField releaseChangeLogInputField;
 
+        private List<RepoCell> cells = new List<RepoCell>();
+        
         
         private void Awake()
         {
@@ -23,26 +26,29 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
 
         private void PopulateRepList()
         {
-            CleanChildren(repListContent);
+            CleanChildren();
             
             RepositoryHandler.ReadReposDataBase(out DataBaseFormat result);
 
             foreach (var rep in result.Reps)
             {
-                repoCellPrefab.Init(rep.Key, rep.Value);
-                Instantiate(repoCellPrefab, repListContent);
+                var instance = Instantiate(repoCellPrefab, repListContent);
+                instance.Init(rep.Key, rep.Value);
+                instance.OnRepoRemoved += RemoveRep;
+                cells.Add(instance);
             }
+        }
+
+        private void CleanChildren()
+        {
+            cells.ForEach(cell =>
+            {
+                cell.OnRepoRemoved -= RemoveRep;
+                DestroyImmediate(cell.gameObject);
+            });
+            cells.Clear();
         }
         
-        private void CleanChildren(Transform tr) 
-        {
-            int nbChildren = tr.childCount;
-
-            for (int i = nbChildren - 1; i >= 0; i--) {
-                DestroyImmediate(tr.GetChild(i).gameObject);
-            }
-        }
-
         public void AddRepButton()
         {
             AddRep();
@@ -57,9 +63,6 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
 
         private void RemoveRep()
         {
-            
-            
-            
             PopulateRepList();
         }
 

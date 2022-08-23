@@ -14,6 +14,7 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
         [SerializeField] private TextMeshProUGUI version;
 
         public event Action OnRepoRemoved;
+        public event Action<string, string, string> OnRepoSelected;
         
         private string CachedPath;
 
@@ -29,7 +30,7 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
         
         public void OnClickButton()
         {
-            
+            OnRepoSelected?.Invoke(CachedPath, packageName.text, version.text);
         }
 
         public void DeleteButton()

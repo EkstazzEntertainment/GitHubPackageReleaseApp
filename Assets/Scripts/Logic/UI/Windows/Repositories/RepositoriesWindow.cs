@@ -1,6 +1,7 @@
 namespace Assets.Scripts.Logic.UI.Windows.Repositories
 {
     using System.Collections.Generic;
+    using global::Logic.Release;
     using global::Logic.Repositories;
     using global::Logic.UI.Windows.Repositories;
     using TMPro;
@@ -95,13 +96,11 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
             }
             else
             {
-                Release();
+                CommitAndReleaseHandler.Release(
+                    currentSelectedPath,
+                    releaseVersionInputField.text, 
+                    releaseChangeLogInputField.text);
             }
-        }
-
-        private void Release()
-        {
-            
         }
     }
 }

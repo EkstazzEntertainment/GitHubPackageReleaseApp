@@ -1,6 +1,8 @@
 namespace Assets.Scripts.Logic.UI.Windows.Repositories
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using global::Logic.Helpers;
     using global::Logic.Release;
     using global::Logic.Repositories;
     using global::Logic.UI.Windows.Repositories;
@@ -60,7 +62,7 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
 
         public void AddShellScriptPathButton()
         {
-            
+            ShellScriptHelper.SaveShellScriptPath(shellScriptPathInputField.text);
         }
         
         public void AddRepButton()
@@ -89,7 +91,7 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
             releaseVersionInputField.text = currentSelectedVersion;
         }
 
-        public void ReleaseButton()
+        public async void ReleaseButton()
         {
             if (currentSelectedVersion == releaseVersionInputField.text)
             {
@@ -104,6 +106,8 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
             else
             {
                 loadingPopup.SetActive(true);
+                await Task.Delay(1000);
+                
                 CommitAndReleaseHandler.Release(
                     currentSelectedPath,
                     releaseVersionInputField.text, 

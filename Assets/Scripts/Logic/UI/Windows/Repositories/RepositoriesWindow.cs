@@ -4,10 +4,9 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
 
     public class RepositoriesWindow : MonoBehaviour
     {
-        private void Start()
+        private void Awake()
         {
             
         }
-        
     }
 }

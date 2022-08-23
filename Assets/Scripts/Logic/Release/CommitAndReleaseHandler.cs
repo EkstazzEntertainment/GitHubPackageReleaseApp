@@ -8,6 +8,7 @@ namespace Logic.Release
     using Helpers;
     using UnityEngine;
     using UnityEngine.Networking;
+    using Debug = UnityEngine.Debug;
 
     public class CommitAndReleaseHandler
     {
@@ -65,21 +66,23 @@ namespace Logic.Release
             WWWForm form = new WWWForm();
             AddBody(ref form, newVersion);
             
-            UnityWebRequest uwr = UnityWebRequest.Post(url, form);
+            UnityWebRequest uwr = UnityWebRequest.Post(url, "form");
             AddHeadersToRequest(ref uwr, BuildGetHeaders("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"));
             uwr.SendWebRequest();
-
+    
             while (!uwr.isDone)
             {
                 Thread.Sleep(50);
             }
 
-            if (uwr.result == UnityWebRequest.Result.ConnectionError)
+            if (uwr.result is UnityWebRequest.Result.ConnectionError or UnityWebRequest.Result.DataProcessingError or UnityWebRequest.Result.ProtocolError)
             {
+                Debug.Log("ERROR: " + uwr.result);
                 callback.Invoke();
             }
             else
             {
+                Debug.Log("SUCCESS: " + uwr.result);
                 callback.Invoke();
             }
             
@@ -88,13 +91,10 @@ namespace Logic.Release
 
         private static void AddBody(ref WWWForm form, string newVersion)
         {
-            form.AddField("tag_name", newVersion);
-            form.AddField("target_commitish", "develop");
-            form.AddField("name", newVersion);
-            form.AddField("body", "default");
-            form.AddField("draft", 0);
-            form.AddField("prerelease", 0);
-            form.AddField("generate_release_notes", 0);
+            form.AddField("tag_name",newVersion);
+            form.AddField("target_commitish","develop");
+            form.AddField("name",newVersion);
+            form.AddField("body","default");
         }
         
         private static void AddHeadersToRequest(ref UnityWebRequest uwr, List<Header> headers)

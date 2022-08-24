@@ -68,7 +68,7 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
         public void AddShellScriptPathButton()
         {
             dataBaseHelper.CreateFileForShellScriptPathIfNeeded();
-            if (!string.IsNullOrWhiteSpace(accessTokenInputField.text))
+            if (!string.IsNullOrWhiteSpace(shellScriptPathInputField.text))
             {
                 dataBaseHelper.WriteTextToFile(Application.persistentDataPath + dataBaseHelper.ShellFileName, shellScriptPathInputField.text);
             }

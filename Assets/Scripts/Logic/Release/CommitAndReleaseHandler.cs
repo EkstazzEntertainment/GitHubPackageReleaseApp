@@ -45,7 +45,7 @@ namespace Logic.Release
         
         private void ExecuteCommitCommand(string path, string version, string commitMessage, Action callback)
         {
-            var shellScriptPath = ShellScriptHelper.RetrieveShellScriptPath();
+            var shellScriptPath = dataBaseHelper.ReadTextFromFile(Application.persistentDataPath + dataBaseHelper.ShellFileName);
             
             var firstArg = path;
             var secondArg = $" 'v{version} released: {commitMessage}'";

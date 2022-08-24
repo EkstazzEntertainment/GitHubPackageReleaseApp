@@ -26,6 +26,8 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
         private List<RepoCell> cells = new List<RepoCell>();
         private string currentSelectedPath;
         private string currentSelectedVersion;
+        private RepositoryHandler repositoryHandler = new RepositoryHandler();
+        private CommitAndReleaseHandler commitAndReleaseHandler = new CommitAndReleaseHandler();
         
         
         private void Awake()
@@ -37,7 +39,8 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
         {
             CleanChildren();
             
-            RepositoryHandler.ReadReposDataBase(out DataBaseFormat result);
+            repositoryHandler.CreateDataBaseIfNeeded();
+            repositoryHandler.ReadReposDataBase(out DataBaseFormat result);
 
             foreach (var rep in result.Reps)
             {
@@ -72,7 +75,7 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
 
         private void AddRep()
         {
-            RepositoryHandler.AddRepositoryLink(repPathInputField.text, repNameInputField.text);
+            repositoryHandler.AddRepositoryLink(repPathInputField.text, repNameInputField.text);
             
             PopulateRepList();
         }
@@ -108,7 +111,7 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
                 loadingPopup.SetActive(true);
                 await Task.Delay(1000);
                 
-                CommitAndReleaseHandler.Release(
+                commitAndReleaseHandler.Release(
                     packageNameText.text,
                     currentSelectedVersion,
                     currentSelectedPath,

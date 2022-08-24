@@ -2,44 +2,43 @@ namespace Logic.Repositories
 {
     using System.IO;
     using Helpers;
-    using UnityEditor;
     using UnityEngine;
 
     public class RepositoryHandler
     {
-        private const string DataBaseFileName = "/ReleasePackages.txt";
+        private DataBaseHelper dataBaseHelper = new DataBaseHelper();
+        
 
-
-        public static void ReadReposDataBase(out DataBaseFormat result)
+        public void ReadReposDataBase(out DataBaseFormat result)
         {
-            DataBaseHelper.ParseTxtIntoType(Application.persistentDataPath + DataBaseFileName, out DataBaseFormat parsedResult);
+            dataBaseHelper.ParseTxtIntoType(Application.persistentDataPath + dataBaseHelper.DataBaseFileName, out DataBaseFormat parsedResult);
             result = parsedResult;
         }
         
-        public static void AddRepositoryLink(string path, string name)
+        public void AddRepositoryLink(string path, string name)
         {
             CreateDataBaseIfNeeded();
             
-            DataBaseHelper.ParseTxtIntoType(Application.persistentDataPath + DataBaseFileName, out DataBaseFormat parsedResult);
+            dataBaseHelper.ParseTxtIntoType(Application.persistentDataPath + dataBaseHelper.DataBaseFileName, out DataBaseFormat parsedResult);
             parsedResult.Reps.Add(path, name);
-            DataBaseHelper.SerializeJsonIntoText(Application.persistentDataPath + DataBaseFileName, parsedResult);
+            dataBaseHelper.SerializeJsonIntoText(Application.persistentDataPath + dataBaseHelper.DataBaseFileName, parsedResult);
         }
 
-        public static void RemoveRepositoryLink(string path, string name)
+        public void RemoveRepositoryLink(string path, string name)
         {
-            DataBaseHelper.ParseTxtIntoType(Application.persistentDataPath + DataBaseFileName, out DataBaseFormat parsedResult);
+            dataBaseHelper.ParseTxtIntoType(Application.persistentDataPath + dataBaseHelper.DataBaseFileName, out DataBaseFormat parsedResult);
             parsedResult.Reps.Remove(path);
-            DataBaseHelper.SerializeJsonIntoText(Application.persistentDataPath + DataBaseFileName, parsedResult);
+            dataBaseHelper.SerializeJsonIntoText(Application.persistentDataPath + dataBaseHelper.DataBaseFileName, parsedResult);
         }
 
-        private static void CreateDataBaseIfNeeded()
+        public void CreateDataBaseIfNeeded()
         {
-            if (!File.Exists(Application.persistentDataPath + DataBaseFileName))
+            if (!File.Exists(Application.persistentDataPath + dataBaseHelper.DataBaseFileName))
             {
-                DataBaseHelper.CreateFile(Application.persistentDataPath + DataBaseFileName);
+                dataBaseHelper.CreateFile(Application.persistentDataPath + dataBaseHelper.DataBaseFileName);
                 
                 var initialStructure = new DataBaseFormat();
-                DataBaseHelper.SerializeJsonIntoText(Application.persistentDataPath + DataBaseFileName, initialStructure);
+                dataBaseHelper.SerializeJsonIntoText(Application.persistentDataPath + dataBaseHelper.DataBaseFileName, initialStructure);
             }
         }
     }

@@ -12,7 +12,7 @@ namespace Logic.Release
     
     public class CommitAndReleaseHandler
     {
-        public static void Release(string packName, string currentVersion, string path, string version, string commitMessage, Action callback)
+        public void Release(string packName, string currentVersion, string path, string version, string commitMessage, Action callback)
         {
             AddToChangeLogFile(path, version, commitMessage);
             ChangeVersionInPackageFile(path, currentVersion, version);
@@ -22,7 +22,7 @@ namespace Logic.Release
             });
         }
 
-        private static void AddToChangeLogFile(string path, string version, string commitMessage)
+        private void AddToChangeLogFile(string path, string version, string commitMessage)
         {
             string jsonText = File.ReadAllText(path + "CHANGELOG.md");
             jsonText += "\n\n";
@@ -30,7 +30,7 @@ namespace Logic.Release
             File.WriteAllText(path + "CHANGELOG.md", jsonText);
         }
 
-        private static void ChangeVersionInPackageFile(string path, string oldVersion, string newVersion)
+        private void ChangeVersionInPackageFile(string path, string oldVersion, string newVersion)
         {
             string jsonText = File.ReadAllText(path + "package.json");
             var oldString = "version" + "\"" + ": " + "\"" + $"{oldVersion}";
@@ -39,7 +39,7 @@ namespace Logic.Release
             File.WriteAllText(path + "package.json", newPackageFileText);
         }
         
-        private static void ExecuteCommitCommand(string path, string version, string commitMessage, Action callback)
+        private void ExecuteCommitCommand(string path, string version, string commitMessage, Action callback)
         {
             var shellScriptPath = ShellScriptHelper.RetrieveShellScriptPath();
             
@@ -59,12 +59,12 @@ namespace Logic.Release
             callback.Invoke();
         }
  
-        private static async void CreateReleaseViaAPI(Action callback, string package, string newVersion, string commitMessage)
+        private async void CreateReleaseViaAPI(Action callback, string package, string newVersion, string commitMessage)
         {
             var url = $"https://api.github.com/repos/EkstazzEntertainment/{package}/releases";
           
             HttpClient client = new HttpClient();
-            AddHeadersToRequest(ref client, BuildHeaders("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"));
+            AddHeadersToRequest(ref client, BuildHeaders("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"));
             var content = new StringContent(AddBody(newVersion, commitMessage));
             var response = await client.PostAsync(url, content);
             var responseString = await response.Content.ReadAsStringAsync();
@@ -72,7 +72,7 @@ namespace Logic.Release
             callback.Invoke();
         }
 
-        private static string AddBody(string newVersion, string commitMessage)
+        private string AddBody(string newVersion, string commitMessage)
         {
             var requestBody = new RequestBody { tag_name = newVersion, name = newVersion, body = commitMessage};
             var finalString = JsonConvert.SerializeObject(requestBody, Formatting.Indented);
@@ -80,7 +80,7 @@ namespace Logic.Release
             return finalString;
         }
         
-        private static List<Header> BuildHeaders(string token)
+        private List<Header> BuildHeaders(string token)
         {
             List<Header> headers = new List<Header>
             {
@@ -91,7 +91,7 @@ namespace Logic.Release
             return headers;
         }
         
-        private static void AddHeadersToRequest(ref HttpClient client, List<Header> headers)
+        private void AddHeadersToRequest(ref HttpClient client, List<Header> headers)
         {
             foreach (var header in headers)
             {

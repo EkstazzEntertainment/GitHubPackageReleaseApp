@@ -17,14 +17,16 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
         public event Action<string, string, string> OnRepoSelected;
         
         private string CachedPath;
-
+        private DataBaseHelper dataBaseHelper = new DataBaseHelper();
+        private RepositoryHandler repositoryHandler = new RepositoryHandler();
+        
 
         public void Init(string path, string packName)
         {
             CachedPath = path;
 
             packageName.text = packName;
-            DataBaseHelper.ParseTxtIntoType(path + "package.json", out PackageJson parsedResult);
+            dataBaseHelper.ParseTxtIntoType(path + "package.json", out PackageJson parsedResult);
             version.text = parsedResult.version;
         }
         
@@ -35,7 +37,7 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
 
         public void DeleteButton()
         {
-            RepositoryHandler.RemoveRepositoryLink(CachedPath, packageName.text);
+            repositoryHandler.RemoveRepositoryLink(CachedPath, packageName.text);
             OnRepoRemoved?.Invoke();
         }
     }

@@ -17,7 +17,7 @@ namespace Logic.Repositories
         
         public void AddRepositoryLink(string path, string name)
         {
-            CreateDataBaseIfNeeded();
+            dataBaseHelper.CreateDatabaseForReposIfNeeded();
             
             dataBaseHelper.ParseTxtIntoType(Application.persistentDataPath + dataBaseHelper.DataBaseFileName, out DataBaseFormat parsedResult);
             parsedResult.Reps.Add(path, name);
@@ -29,17 +29,6 @@ namespace Logic.Repositories
             dataBaseHelper.ParseTxtIntoType(Application.persistentDataPath + dataBaseHelper.DataBaseFileName, out DataBaseFormat parsedResult);
             parsedResult.Reps.Remove(path);
             dataBaseHelper.SerializeJsonIntoText(Application.persistentDataPath + dataBaseHelper.DataBaseFileName, parsedResult);
-        }
-
-        public void CreateDataBaseIfNeeded()
-        {
-            if (!File.Exists(Application.persistentDataPath + dataBaseHelper.DataBaseFileName))
-            {
-                dataBaseHelper.CreateFile(Application.persistentDataPath + dataBaseHelper.DataBaseFileName);
-                
-                var initialStructure = new DataBaseFormat();
-                dataBaseHelper.SerializeJsonIntoText(Application.persistentDataPath + dataBaseHelper.DataBaseFileName, initialStructure);
-            }
         }
     }
 }

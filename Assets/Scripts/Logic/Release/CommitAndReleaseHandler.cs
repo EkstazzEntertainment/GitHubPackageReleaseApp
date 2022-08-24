@@ -7,11 +7,15 @@ namespace Logic.Release
     using System.Net.Http;
     using Helpers;
     using Newtonsoft.Json;
+    using UnityEngine;
     using Debug = UnityEngine.Debug;
 
     
     public class CommitAndReleaseHandler
     {
+        private DataBaseHelper dataBaseHelper = new DataBaseHelper();
+        
+        
         public void Release(string packName, string currentVersion, string path, string version, string commitMessage, Action callback)
         {
             AddToChangeLogFile(path, version, commitMessage);
@@ -64,7 +68,9 @@ namespace Logic.Release
             var url = $"https://api.github.com/repos/EkstazzEntertainment/{package}/releases";
           
             HttpClient client = new HttpClient();
-            AddHeadersToRequest(ref client, BuildHeaders("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"));
+            AddHeadersToRequest(
+                ref client, 
+                BuildHeaders(dataBaseHelper.ReadTextFromFile(Application.persistentDataPath + dataBaseHelper.TokenFileName)));
             var content = new StringContent(AddBody(newVersion, commitMessage));
             var response = await client.PostAsync(url, content);
             var responseString = await response.Content.ReadAsStringAsync();

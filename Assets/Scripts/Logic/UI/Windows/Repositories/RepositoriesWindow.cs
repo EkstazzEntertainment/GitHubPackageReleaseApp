@@ -13,6 +13,7 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
     public class RepositoriesWindow : MonoBehaviour
     {
         [SerializeField] private TMP_InputField shellScriptPathInputField;
+        [SerializeField] private TMP_InputField accessTokenInputField;
         [SerializeField] private RepoCell repoCellPrefab;
         [SerializeField] private TMP_InputField repPathInputField;
         [SerializeField] private TMP_InputField repNameInputField;
@@ -28,6 +29,7 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
         private string currentSelectedVersion;
         private RepositoryHandler repositoryHandler = new RepositoryHandler();
         private CommitAndReleaseHandler commitAndReleaseHandler = new CommitAndReleaseHandler();
+        private DataBaseHelper dataBaseHelper = new DataBaseHelper();
         
         
         private void Awake()
@@ -39,7 +41,7 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
         {
             CleanChildren();
             
-            repositoryHandler.CreateDataBaseIfNeeded();
+            dataBaseHelper.CreateDatabaseForReposIfNeeded();
             repositoryHandler.ReadReposDataBase(out DataBaseFormat result);
 
             foreach (var rep in result.Reps)
@@ -66,6 +68,15 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
         public void AddShellScriptPathButton()
         {
             ShellScriptHelper.SaveShellScriptPath(shellScriptPathInputField.text);
+        }
+
+        public void AddAccessTokenButton()
+        {
+            dataBaseHelper.CreateFileForTokenIfNeeded();
+            if (!string.IsNullOrWhiteSpace(accessTokenInputField.text))
+            {
+                dataBaseHelper.WriteTextToFile(Application.persistentDataPath + dataBaseHelper.TokenFileName, accessTokenInputField.text);
+            }
         }
         
         public void AddRepButton()

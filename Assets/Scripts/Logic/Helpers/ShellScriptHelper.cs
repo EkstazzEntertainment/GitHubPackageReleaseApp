@@ -9,6 +9,7 @@ namespace Logic.Helpers
         public static void SaveShellScriptPath(string path)
         {
             PlayerPrefs.SetString(SaveKey, path);
+            PlayerPrefs.Save();
         }
         
         public static string RetrieveShellScriptPath()

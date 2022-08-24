@@ -8,6 +8,7 @@ namespace Logic.Release
     using System.IO;
     using System.Net;
     using System.Net.Http;
+    using System.Net.Http.Headers;
     using System.Threading;
     using Helpers;
     using UnityEngine;
@@ -62,15 +63,13 @@ namespace Logic.Release
             
             callback.Invoke();
         }
-
+ 
         private static async void CreateReleaseViaAPI(Action callback, string package, string newVersion)
         {
             var url = $"https://api.github.com/repos/EkstazzEntertainment/{package}/releases";
           
             HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Accept", "application/vnd.github+json");
-            client.DefaultRequestHeaders.Add("Authorization", "token " + "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");
-            client.DefaultRequestHeaders.Add("User-Agent", "PostmanRuntime/7.29.2");
+            AddHeadersToRequest(ref client, BuildHeaders("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"));
             var stri = "{\"tag_name\":\"1.1.2\",\"target_commitish\":\"develop\",\"name\":\"1.1.2\",\"body\":\"Description of the release\"}";
             var content = new StringContent(stri);
             var response = await client.PostAsync(url, content);
@@ -86,14 +85,6 @@ namespace Logic.Release
             form.AddField("body","default");
         }
         
-        private static void AddHeadersToRequest(ref UnityWebRequest uwr, List<Header> headers)
-        {
-            foreach (var header in headers)
-            {
-                uwr.SetRequestHeader(header.Name, header.Value);
-            }
-        }
-        
         private static List<Header> BuildHeaders(string token)
         {
             List<Header> headers = new List<Header>
@@ -103,6 +94,14 @@ namespace Logic.Release
                 new Header {Name = "User-Agent", Value = "PostmanRuntime/7.29.2"},
             };
             return headers;
+        }
+        
+        private static void AddHeadersToRequest(ref HttpClient client, List<Header> headers)
+        {
+            foreach (var header in headers)
+            {
+                client.DefaultRequestHeaders.Add(header.Name, header.Value);
+            }
         }
     }
     

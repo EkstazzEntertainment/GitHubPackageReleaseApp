@@ -9,6 +9,7 @@ namespace Logic.Release
     using Newtonsoft.Json;
     using Debug = UnityEngine.Debug;
 
+    
     public class CommitAndReleaseHandler
     {
         public static void Release(string packName, string currentVersion, string path, string version, string commitMessage, Action callback)
@@ -17,7 +18,7 @@ namespace Logic.Release
             ChangeVersionInPackageFile(path, currentVersion, version);
             ExecuteCommitCommand(path, version, commitMessage, () =>
             {
-                CreateReleaseViaAPI(callback, packName, version);
+                CreateReleaseViaAPI(callback, packName, version, commitMessage);
             });
         }
 
@@ -58,22 +59,22 @@ namespace Logic.Release
             callback.Invoke();
         }
  
-        private static async void CreateReleaseViaAPI(Action callback, string package, string newVersion)
+        private static async void CreateReleaseViaAPI(Action callback, string package, string newVersion, string commitMessage)
         {
             var url = $"https://api.github.com/repos/EkstazzEntertainment/{package}/releases";
           
             HttpClient client = new HttpClient();
             AddHeadersToRequest(ref client, BuildHeaders("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"));
-            var content = new StringContent(AddBody(newVersion));
+            var content = new StringContent(AddBody(newVersion, commitMessage));
             var response = await client.PostAsync(url, content);
             var responseString = await response.Content.ReadAsStringAsync();
             Debug.Log(responseString);
             callback.Invoke();
         }
 
-        private static string AddBody(string newVersion)
+        private static string AddBody(string newVersion, string commitMessage)
         {
-            var requestBody = new RequestBody { tag_name = newVersion, name = newVersion};
+            var requestBody = new RequestBody { tag_name = newVersion, name = newVersion, body = commitMessage};
             var finalString = JsonConvert.SerializeObject(requestBody, Formatting.Indented);
 
             return finalString;

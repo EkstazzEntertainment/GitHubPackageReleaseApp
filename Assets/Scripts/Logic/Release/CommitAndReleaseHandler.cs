@@ -1,18 +1,12 @@
-using UnityEngine.Networking;
-
 namespace Logic.Release
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
-    using System.Net;
     using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Threading;
     using Helpers;
-    using UnityEngine;
-    using UnityEngine.Networking;
+    using Newtonsoft.Json;
     using Debug = UnityEngine.Debug;
 
     public class CommitAndReleaseHandler
@@ -69,20 +63,20 @@ namespace Logic.Release
             var url = $"https://api.github.com/repos/EkstazzEntertainment/{package}/releases";
           
             HttpClient client = new HttpClient();
-            AddHeadersToRequest(ref client, BuildHeaders("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"));
-            var stri = "{\"tag_name\":\"1.1.2\",\"target_commitish\":\"develop\",\"name\":\"1.1.2\",\"body\":\"Description of the release\"}";
-            var content = new StringContent(stri);
+            AddHeadersToRequest(ref client, BuildHeaders("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"));
+            var content = new StringContent(AddBody(newVersion));
             var response = await client.PostAsync(url, content);
             var responseString = await response.Content.ReadAsStringAsync();
             Debug.Log(responseString);
+            callback.Invoke();
         }
 
-        private static void AddBody(ref WWWForm form, string newVersion)
+        private static string AddBody(string newVersion)
         {
-            form.AddField("tag_name",newVersion);
-            form.AddField("target_commitish","develop");
-            form.AddField("name",newVersion);
-            form.AddField("body","default");
+            var requestBody = new RequestBody { tag_name = newVersion, name = newVersion};
+            var finalString = JsonConvert.SerializeObject(requestBody, Formatting.Indented);
+
+            return finalString;
         }
         
         private static List<Header> BuildHeaders(string token)
@@ -105,18 +99,21 @@ namespace Logic.Release
         }
     }
     
+    [Serializable]
     public class Header
     {
         public string Name;
         public string Value;
     }
+
+    [Serializable]
+    public class RequestBody
+    {
+        public string tag_name;
+        public string target_commitish = "develop";
+        public string name;
+        public string body = "default";
+    }
 }
 
-public class BypassCertificate : CertificateHandler
-{
-    protected override bool ValidateCertificate(byte[] certificateData)
-    {
-        //Simply return true no matter what
-        return true;
-    }
-} 
+

@@ -67,7 +67,11 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
 
         public void AddShellScriptPathButton()
         {
-            ShellScriptHelper.SaveShellScriptPath(shellScriptPathInputField.text);
+            dataBaseHelper.CreateFileForShellScriptPathIfNeeded();
+            if (!string.IsNullOrWhiteSpace(accessTokenInputField.text))
+            {
+                dataBaseHelper.WriteTextToFile(Application.persistentDataPath + dataBaseHelper.ShellFileName, shellScriptPathInputField.text);
+            }
         }
 
         public void AddAccessTokenButton()
@@ -86,7 +90,7 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
 
         private void AddRep()
         {
-            repositoryHandler.AddRepositoryLink(repPathInputField.text, repNameInputField.text);
+            repositoryHandler.AddRepositoryLink(repPathInputField.text + "/", repNameInputField.text);
             
             PopulateRepList();
         }

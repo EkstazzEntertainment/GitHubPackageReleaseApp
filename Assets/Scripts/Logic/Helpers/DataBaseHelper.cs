@@ -10,7 +10,8 @@ namespace Logic.Helpers
     public class DataBaseHelper
     {
         public string DataBaseFileName = "/ReleasePackages.txt";
-        public string TokenFileName = "/token.txt";
+        public string TokenFileName = "/Token.txt";
+        public string ShellFileName = "/ShellScriptPath.txt";
 
         
         public void ParseTxtIntoType<T>(string txtPath, out T parsedResult)
@@ -46,6 +47,14 @@ namespace Logic.Helpers
         public void CreateFileForTokenIfNeeded()
         {
             CreateDataBaseIfNeeded(Application.persistentDataPath + TokenFileName, () =>
+            {
+                
+            });
+        }
+
+        public void CreateFileForShellScriptPathIfNeeded()
+        {
+            CreateDataBaseIfNeeded(Application.persistentDataPath + ShellFileName, () =>
             {
                 
             });

@@ -5,6 +5,7 @@ namespace Logic.Release
     using System.Diagnostics;
     using System.IO;
     using System.Net.Http;
+    using System.Threading.Tasks;
     using Helpers;
     using Newtonsoft.Json;
     using UnityEngine;
@@ -43,7 +44,7 @@ namespace Logic.Release
             File.WriteAllText(path + "package.json", newPackageFileText);
         }
         
-        private void ExecuteCommitCommand(string path, string version, string commitMessage, Action callback)
+        private async void ExecuteCommitCommand(string path, string version, string commitMessage, Action callback)
         {
             var shellScriptPath = dataBaseHelper.ReadTextFromFile(Application.persistentDataPath + dataBaseHelper.ShellFileName);
             var firstArg = path;
@@ -51,16 +52,20 @@ namespace Logic.Release
             var arguments = firstArg + secondArg;
             using (Process p = new Process())
             {
-                p.StartInfo.UseShellExecute = false;
-                p.StartInfo.RedirectStandardOutput = true;
+                p.StartInfo.UseShellExecute = true; //false
+                p.StartInfo.RedirectStandardOutput = false; //true
                 p.StartInfo.FileName = shellScriptPath;
                 p.StartInfo.Arguments = arguments;
                 p.Start();
-                string output = p.StandardOutput.ReadToEnd();
-                p.WaitForExit();
-                Debug.Log(output);
-                p.Close();
-            } 
+                // string output = p.StandardOutput.ReadToEnd();
+                // p.WaitForExit();
+                // Debug.Log(output);
+                // p.Close();
+                
+                //the comments do not work since GIT PUSH works only in first launch of the app but somehow fails in the succeeding ones.
+            }
+
+            await Task.Delay(20000);
             
             callback.Invoke();
         }

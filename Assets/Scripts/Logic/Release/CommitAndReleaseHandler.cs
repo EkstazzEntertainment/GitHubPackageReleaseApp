@@ -46,19 +46,21 @@ namespace Logic.Release
         private void ExecuteCommitCommand(string path, string version, string commitMessage, Action callback)
         {
             var shellScriptPath = dataBaseHelper.ReadTextFromFile(Application.persistentDataPath + dataBaseHelper.ShellFileName);
-            
             var firstArg = path;
             var secondArg = $" 'v{version} released: {commitMessage}'";
             var arguments = firstArg + secondArg;
-            Process p = new Process();
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.RedirectStandardOutput = true;
-            p.StartInfo.FileName = shellScriptPath;
-            p.StartInfo.Arguments = arguments;
-            p.Start();
-
-            string output = p.StandardOutput.ReadToEnd();
-            p.WaitForExit();
+            using (Process p = new Process())
+            {
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.RedirectStandardOutput = true;
+                p.StartInfo.FileName = shellScriptPath;
+                p.StartInfo.Arguments = arguments;
+                p.Start();
+                string output = p.StandardOutput.ReadToEnd();
+                p.WaitForExit();
+                Debug.Log(output);
+                p.Close();
+            } 
             
             callback.Invoke();
         }

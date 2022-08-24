@@ -4352,6 +4352,8 @@ GameObject:
   - component: {fileID: 8016494760157982306}
   - component: {fileID: 4896887180439229872}
   - component: {fileID: 1534815249183554751}
+  - component: {fileID: 4207756978917629147}
+  - component: {fileID: 5188976803731089473}
   m_Layer: 5
   m_Name: SRDebuggerButton
   m_TagString: Untagged
@@ -4487,6 +4489,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f8f681ab05a54dfd9061e585d051f70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!223 &4207756978917629147
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8324849771754510152}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 25
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 111
+  m_TargetDisplay: 0
+--- !u!114 &5188976803731089473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8324849771754510152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &8475140823963866842
 GameObject:
   m_ObjectHideFlags: 0
@@ -5107,6 +5148,10 @@ PrefabInstance:
     - target: {fileID: 2746083804455852042, guid: 7c54904a21f384c7b8f6ef241b82c605, type: 3}
       propertyPath: m_Name
       value: LoadingPopUp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2746083804455852042, guid: 7c54904a21f384c7b8f6ef241b82c605, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []

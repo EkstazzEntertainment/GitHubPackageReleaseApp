@@ -1,9 +1,13 @@
+using UnityEngine.Networking;
+
 namespace Logic.Release
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
+    using System.Net;
+    using System.Net.Http;
     using System.Threading;
     using Helpers;
     using UnityEngine;
@@ -59,34 +63,19 @@ namespace Logic.Release
             callback.Invoke();
         }
 
-        private static void CreateReleaseViaAPI(Action callback, string package, string newVersion)
+        private static async void CreateReleaseViaAPI(Action callback, string package, string newVersion)
         {
             var url = $"https://api.github.com/repos/EkstazzEntertainment/{package}/releases";
-            
-            WWWForm form = new WWWForm();
-            AddBody(ref form, newVersion);
-            
-            UnityWebRequest uwr = UnityWebRequest.Post(url, "form");
-            AddHeadersToRequest(ref uwr, BuildGetHeaders("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"));
-            uwr.SendWebRequest();
-    
-            while (!uwr.isDone)
-            {
-                Thread.Sleep(50);
-            }
-
-            if (uwr.result is UnityWebRequest.Result.ConnectionError or UnityWebRequest.Result.DataProcessingError or UnityWebRequest.Result.ProtocolError)
-            {
-                Debug.Log("ERROR: " + uwr.result);
-                callback.Invoke();
-            }
-            else
-            {
-                Debug.Log("SUCCESS: " + uwr.result);
-                callback.Invoke();
-            }
-            
-            uwr.Dispose();
+          
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Accept", "application/vnd.github+json");
+            client.DefaultRequestHeaders.Add("Authorization", "token " + "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");
+            client.DefaultRequestHeaders.Add("User-Agent", "PostmanRuntime/7.29.2");
+            var stri = "{\"tag_name\":\"1.1.2\",\"target_commitish\":\"develop\",\"name\":\"1.1.2\",\"body\":\"Description of the release\"}";
+            var content = new StringContent(stri);
+            var response = await client.PostAsync(url, content);
+            var responseString = await response.Content.ReadAsStringAsync();
+            Debug.Log(responseString);
         }
 
         private static void AddBody(ref WWWForm form, string newVersion)
@@ -105,12 +94,13 @@ namespace Logic.Release
             }
         }
         
-        private static List<Header> BuildGetHeaders(string token)
+        private static List<Header> BuildHeaders(string token)
         {
             List<Header> headers = new List<Header>
             {
                 new Header {Name = "Accept", Value = "application/vnd.github+json"},
-                new Header {Name = "Authorization", Value = "token " + token}
+                new Header {Name = "Authorization", Value = "token " + token},
+                new Header {Name = "User-Agent", Value = "PostmanRuntime/7.29.2"},
             };
             return headers;
         }
@@ -122,3 +112,12 @@ namespace Logic.Release
         public string Value;
     }
 }
+
+public class BypassCertificate : CertificateHandler
+{
+    protected override bool ValidateCertificate(byte[] certificateData)
+    {
+        //Simply return true no matter what
+        return true;
+    }
+} 

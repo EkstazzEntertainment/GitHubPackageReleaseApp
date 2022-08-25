@@ -36,18 +36,19 @@ echo PUSHING!!!
 #{
 
 git push 
+
 #git push -u EkstazzEntertainment develop
 
 echo --------------------------
 
 CheckFailure
 
-if git push EkstazzEntertainment develop
-then
-  echo "git push succeeded"
-else
-  echo "git push failed"
-fi
+#if git push EkstazzEntertainment develop
+#then
+#  echo "git push succeeded"
+#else
+#  echo "git push failed"
+#fi
 
 #} >> /Users/yuriialeksanian/Desktop/logs.txt
 

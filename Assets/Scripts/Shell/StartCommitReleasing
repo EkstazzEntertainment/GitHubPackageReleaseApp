@@ -1,0 +1,28 @@
+#!/bin/sh
+
+echo ------------------------------------------------------
+echo $1
+echo $2
+echo $3
+echo ------------------------------------------------------
+
+
+echo -------------------------COMMAND TO EXECUTE-----------------------------
+foo=$1
+boo=$2
+noo=$3
+
+com="cd ${noo} ; sh CommitRelease ${foo} ${boo}" 
+echo "${com}"
+echo ------------------------------------------------------
+
+
+osascript -  "$com"  <<EOF
+
+    on run argv -- argv is a list of strings
+        tell application "Terminal"
+            do script (item 1 of argv)
+        end tell
+    end run
+
+EOF

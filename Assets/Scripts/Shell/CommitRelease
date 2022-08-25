@@ -1,0 +1,56 @@
+#!/bin/sh
+
+
+echo ------------------------------------------------------
+echo $1
+echo $2
+echo ------------------------------------------------------
+
+
+
+CheckFailure() {
+	if [ $? -eq 0 ]; then
+		echo OK----------------------------
+
+	else
+		echo FAIL--------------------------
+		echo $?
+		#exit 0
+	fi
+}
+
+
+
+cd $1
+
+git add .
+commit=$2
+git commit -m "$2"
+git status
+
+cd
+cd $1
+
+echo PUSHING!!!
+
+#{
+
+git push 
+#git push -u EkstazzEntertainment develop
+
+echo --------------------------
+
+CheckFailure
+
+if git push EkstazzEntertainment develop
+then
+  echo "git push succeeded"
+else
+  echo "git push failed"
+fi
+
+#} >> /Users/yuriialeksanian/Desktop/logs.txt
+
+
+cd
+exit 0

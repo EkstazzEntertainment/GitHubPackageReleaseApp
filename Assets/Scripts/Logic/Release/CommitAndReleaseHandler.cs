@@ -67,39 +67,7 @@ namespace Logic.Release
                 //the comments do not work since GIT PUSH works only in first launch of the app but somehow fails in the succeeding ones.
             }
 
-            const int maxSeconds = 60;
-            var seconds = 0;
-            do
-            {
-                var output = "";
-                using (Process process = new Process())
-                {
-                    process.StartInfo.UseShellExecute = false;
-                    process.StartInfo.RedirectStandardOutput = true; 
-                    process.StartInfo.FileName = shellScriptPath + "/CheckPushStatus";
-                    process.StartInfo.Arguments = shellScriptPath;
-                    process.Start();
-                    output = process.StandardOutput.ReadToEnd();
-                    process.WaitForExit();
-                    process.Close();
-                }
-                
-                Debug.Log(output + "   ////////////////");
-                if (output.Contains("branch is ahead of"))
-                {
-                    await Task.Delay(1000);
-                    Debug.Log("still not finished pushing");
-                    seconds++;
-                }
-                else
-                {
-                    if (seconds >= maxSeconds)
-                    {
-                        break;
-                    }
-                }
-                
-            } while (seconds <= maxSeconds);
+            await Task.Delay(30000);
             
             callback.Invoke();
         }

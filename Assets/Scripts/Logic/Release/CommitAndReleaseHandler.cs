@@ -51,14 +51,14 @@ namespace Logic.Release
             var secondArg = $" 'v{version} released: {commitMessage}'";
             var thirdArg = " " + shellScriptPath;
             var arguments = firstArg + secondArg + thirdArg;
-            using (Process p = new Process())
+            using (Process process = new Process())
             {
-                p.StartInfo.UseShellExecute = true; //false
-                p.StartInfo.RedirectStandardOutput = false; //true
+                process.StartInfo.UseShellExecute = true; //false
+                process.StartInfo.RedirectStandardOutput = false; //true
                 Debug.Log(shellScriptPath + "/StartCommitReleasing");
-                p.StartInfo.FileName = shellScriptPath + "/StartCommitReleasing";
-                p.StartInfo.Arguments = arguments;
-                p.Start();
+                process.StartInfo.FileName = shellScriptPath + "/StartCommitReleasing";
+                process.StartInfo.Arguments = arguments;
+                process.Start();
                 // string output = p.StandardOutput.ReadToEnd();
                 // p.WaitForExit();
                 // Debug.Log(output);
@@ -67,7 +67,39 @@ namespace Logic.Release
                 //the comments do not work since GIT PUSH works only in first launch of the app but somehow fails in the succeeding ones.
             }
 
-            await Task.Delay(20000);
+            const int maxSeconds = 60;
+            var seconds = 0;
+            do
+            {
+                var output = "";
+                using (Process process = new Process())
+                {
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.RedirectStandardOutput = true; 
+                    process.StartInfo.FileName = shellScriptPath + "/CheckPushStatus";
+                    process.StartInfo.Arguments = shellScriptPath;
+                    process.Start();
+                    output = process.StandardOutput.ReadToEnd();
+                    process.WaitForExit();
+                    process.Close();
+                }
+                
+                Debug.Log(output + "   ////////////////");
+                if (output.Contains("branch is ahead of"))
+                {
+                    await Task.Delay(1000);
+                    Debug.Log("still not finished pushing");
+                    seconds++;
+                }
+                else
+                {
+                    if (seconds >= maxSeconds)
+                    {
+                        break;
+                    }
+                }
+                
+            } while (seconds <= maxSeconds);
             
             callback.Invoke();
         }

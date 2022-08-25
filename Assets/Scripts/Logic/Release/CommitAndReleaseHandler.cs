@@ -49,12 +49,14 @@ namespace Logic.Release
             var shellScriptPath = dataBaseHelper.ReadTextFromFile(Application.persistentDataPath + dataBaseHelper.ShellFileName);
             var firstArg = path;
             var secondArg = $" 'v{version} released: {commitMessage}'";
-            var arguments = firstArg + secondArg;
+            var thirdArg = " " + shellScriptPath;
+            var arguments = firstArg + secondArg + thirdArg;
             using (Process p = new Process())
             {
                 p.StartInfo.UseShellExecute = true; //false
                 p.StartInfo.RedirectStandardOutput = false; //true
-                p.StartInfo.FileName = shellScriptPath;
+                Debug.Log(shellScriptPath + "/StartCommitReleasing");
+                p.StartInfo.FileName = shellScriptPath + "/StartCommitReleasing";
                 p.StartInfo.Arguments = arguments;
                 p.Start();
                 // string output = p.StandardOutput.ReadToEnd();

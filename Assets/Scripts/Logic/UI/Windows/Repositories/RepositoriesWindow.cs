@@ -113,8 +113,10 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
         {
             if (currentSelectedVersion == releaseVersionInputField.text)
             {
-                Debug.Log("Choose a different release version");
-                warningPopUp.Init();
+                // Debug.Log("Choose a different release version");
+                // warningPopUp.Init();
+                
+                Release();
             }
             else if (string.IsNullOrWhiteSpace(releaseChangeLogInputField.text))
             {
@@ -122,6 +124,11 @@ namespace Assets.Scripts.Logic.UI.Windows.Repositories
                 warningPopUp.Init();
             }
             else
+            {
+                Release();
+            }
+
+            async void Release()
             {
                 loadingPopup.SetActive(true);
                 await Task.Delay(1000);
